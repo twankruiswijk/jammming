@@ -5,12 +5,12 @@ import TrackList from '../TrackList/TrackList';
 
 class SearchResults extends Component {
   render() {
-    const {songs} = this.props;
+    const {songs, onAdd} = this.props;
 
     return (
       <div className="SearchResults">
         <h2>Results</h2>
-        <TrackList songs={songs}/>
+        <TrackList songs={songs} onAdd={onAdd}/>
       </div>
     );
   }

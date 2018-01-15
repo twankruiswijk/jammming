@@ -2,17 +2,39 @@ import React, {Component} from 'react';
 import './Track.css';
 
 class Track extends Component {
-  renderAction(isRemoval) {
-    if (!isRemoval) {
-      return '+';
+  constructor(props) {
+    super(props);
+
+    this.addTrack = this.addTrack.bind(this);
+    this.removeTrack = this.removeTrack.bind(this);
+  }
+
+
+  renderAction() {
+    const {onAdd} = this.props;
+
+    if (onAdd) {
+      return <a className="Track-action" onClick={this.addTrack}>+</a>;
     }
 
-    return '-';
+    return <a className="Track-action" onClick={this.removeTrack}>-</a>;
+  }
+
+  addTrack() {
+    const {track, onAdd} = this.props;
+
+    onAdd(track);
+  }
+
+  removeTrack() {
+    const {track, onRemove} = this.props;
+
+    onRemove(track);
   }
 
   render() {
-    const {songMeta: {name, artist, album}} = this.props;
-    const trackAction = this.renderAction(false);
+    const {track: {name, artist, album}} = this.props;
+    const trackAction = this.renderAction();
 
     return (
       <div className="Track">
@@ -21,7 +43,7 @@ class Track extends Component {
           <p>{artist} | {album}</p>
         </div>
 
-        <a className="Track-action">{trackAction}</a>
+        {trackAction}
       </div>
     );
   }

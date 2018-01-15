@@ -8,7 +8,9 @@ class TrackList extends Component {
     const {songs} = this.props;
     
     const tracks = songs.map((song, index) => {
-      return <Track key={`song-${song.id}`} songMeta={song}/>;
+      const {onAdd, onRemove} = this.props;
+      
+      return <Track key={`song-${song.id}`} track={song} onAdd={onAdd} onRemove={onRemove}/>;
     })
 
     return (
