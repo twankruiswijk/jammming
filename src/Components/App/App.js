@@ -1,18 +1,21 @@
 import React, {Component} from 'react';
+import Spotify from '../../util/Spotify';
 import './App.css';
 
 import SearchBar from '../SearchBar/SearchBar';
 import SearchResults from '../SearchResults/SearchResults';
 import Playlist from '../Playlist/Playlist';
 
+Spotify.getAccessToken();
+
 class App extends Component {
   constructor(props) {
     super(props);
     
     this.state = {
-      searchResults: staticSongs,
+      searchResults: [],
       playlistName: 'New Playlist',
-      playlistTracks: staticSongs2,
+      playlistTracks: [],
     }
 
     this.search = this.search.bind(this);
@@ -23,7 +26,10 @@ class App extends Component {
   }
 
   search(searchTerm) {
-    console.log(searchTerm);
+    Spotify.search(searchTerm)
+      .then(searchResults => this.setState({
+        searchResults: searchResults,
+      }));
   }
 
   updatePlaylistName(name) {
@@ -54,8 +60,14 @@ class App extends Component {
   savePlaylist() {
     const {playlistTracks, playlistName} = this.state;
 
-    const trackURIs = playlistTracks.map(track => track.name); 
-    console.log(`Saved ${playlistName}`, trackURIs)
+    const trackURIs = playlistTracks.map(track => track.uri); 
+    Spotify.savePlaylist(playlistName, trackURIs);
+
+    this.setState({
+      playlistName: 'New Playlist',
+      searchResults: [],
+      playlistTracks: [],
+    })
   }
 
   render() {
@@ -71,7 +83,7 @@ class App extends Component {
           <div className="App-playlist">
             <SearchResults songs={searchResults} onAdd={this.addTrack}/>
             
-            <Playlist 
+            <Playlist
               name={playlistName} 
               songs={playlistTracks} 
               onNameChange={this.updatePlaylistName} 
@@ -86,45 +98,3 @@ class App extends Component {
 }
 
 export default App;
-
-const staticSongs = [
-  {
-    id: 1,
-    name: 'Looking up',
-    artist: 'Surfing Allowed',
-    album: 'Looking up',
-  },
-  {
-    id: 2,
-    name: 'Hardwired',
-    artist: 'Metallica',
-    album: 'Hardwired',
-  },
-  {
-    id: 3,
-    name: 'Run',
-    artist: 'Foo Fighters', 
-    album: 'Concrete gold',
-  },
-]
-
-const staticSongs2 = [
-  {
-    id: 4,
-    name: 'Looking up 2',
-    artist: 'Surfing Allowed',
-    album: 'Looking up',
-  },
-  {
-    id: 5,
-    name: 'Hardwired 2',
-    artist: 'Metallica',
-    album: 'Hardwired',
-  },
-  {
-    id: 6,
-    name: 'Run 2',
-    artist: 'Foo Fighters', 
-    album: 'Concrete gold',
-  },
-]
